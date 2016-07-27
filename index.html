@@ -19,7 +19,7 @@
     <!-- Message List  -->
     <ul id="messages">
       <!-- Prevent error due to duplicate messages by tracking each message via unique index -->
-      <li data-ng-repeat="message in vm.messages track by $index">{{message}}</li>
+      <li data-ng-repeat="message in vm.messages track by $index">{{message.text}}</li>
     </ul>
 
     <!-- New Message  -->
@@ -30,22 +30,29 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-resource.min.js"></script>
     <script>
      // Initialize client socket
       var socket = io();
 
       // Define initial Angular module
       angular
-        .module('ngChat', [])
+        .module('ngChat', [ 'ngResource' ])
+        .factory("MessageFactory", [ "$resource", Message ])
         .controller('chatCtrl', [
           "$scope",
+          "MessageFactory",
           chatController
-        ])
+        ]);
 
         // Define Chat Controller
-        function chatController ($scope) {
+        function chatController ($scope, MessageFactory) {
           var vm = this;
-          vm.messages = [];
+
+          MessageFactory.query().$promise.then(function (messages) {
+            vm.messages = messages;
+          });
+
           vm.newMessage = '';
 
           // When a user enters a new message...
@@ -57,10 +64,19 @@
 
           // When the server sends back the new message...
           socket.on('chat message', function (msg) {
-            // need to trigger angular event loop to render updated data
-            $scope.$apply(function () {
-              vm.messages.push(msg)
-            })
+            if (msg) {
+              // need to trigger angular event loop to render updated data
+              $scope.$apply(function () {
+                vm.messages.push({text: msg})
+              })
+            }
+          });
+        }
+
+        // Define Message Factory
+        function Message ($resource) {
+          return $resource("/api/messages", {}, {
+            method: { update: "PUT" }
           });
         }
     </script>
