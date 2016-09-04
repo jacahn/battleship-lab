@@ -3,33 +3,140 @@
   <head>
     <meta charset="utf-8">
     <title>Battleship App</title>
-    <!-- /*<style>
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body { font: 13px Helvetica, Arial; }
-      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
-      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-      form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-      #messages { list-style-type: none; margin: 0; padding: 0; }
-      #messages li { padding: 5px 10px; }
-      #messages li:nth-child(odd) { background: #eee; }
-    </style>*/ -->
+    <style>
+
+
+      td {
+        padding: 25px;
+      }
+
+      td:hover {
+        background-color: deepskyblue;
+      }
+
+      td.hit {
+        background-color: red;
+      }
+
+
+      td {
+        background-color: skyblue;
+
+      }
+
+
+      #player_board td.ship {
+        background-color: black;
+      }
+
+      td.revealed {
+        background-color: deepskyblue;
+      }
+
+      /*#enemy_board td {*/
+        /*background-color: deepskyblue;*/
+      /*}*/
+
+
+    </style>
+
   </head>
-  <body data-ng-controller="battleshipCtrl as vm">
+  <!--<body data-ng-controller="battleshipCtrl as vm">-->
 
-    <!-- Message List  -->
-    <ul id="turns">
-      <!-- Prevent error due to duplicate messages by tracking each message via unique index -->
-      <li data-ng-repeat="turn in vm.turns track by $index">{{turn.text}}</li>
-    </ul>
+    <!--&lt;!&ndash; Message List  &ndash;&gt;-->
+    <!--<ul id="turns">-->
+      <!--&lt;!&ndash; Prevent error due to duplicate messages by tracking each message via unique index &ndash;&gt;-->
+      <!--<li data-ng-repeat="turn in vm.turns track by $index">{{turn.text}}</li>-->
+    <!--</ul>-->
 
-    <!-- New Message  -->
-    <form data-ng-submit="vm.sendTurn()">
-      <input data-ng-model="vm.newTurn" autocomplete="off" />
-      <button>Send</button>
-    </form>
+    <table id="enemy_board">
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+
+    <table id="player_board">
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </table>
+
+
+
+
+
+
+
+
+
+
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+  <script   src="https://code.jquery.com/jquery-2.2.4.js"   integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="   crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-resource.min.js"></script>
     <script>
@@ -80,6 +187,69 @@
             method: { update: "PUT" }
           });
         }
+
+
+
     </script>
+
+  <script>
+    $(document).ready(function () {
+      var player_board = [
+        [{ship: true, hit: false},{ship: true, hit: false},{ship: false, hit: false},{ship: true, hit: false},{ship: false, hit: false}],
+        [{ship: false, hit: false},{ship: false, hit: false},{ship: false, hit: false},{ship: false, hit: false},{ship: false, hit: false}],
+        [{ship: true, hit: false},{ship: false, hit: false},{ship: false, hit: false},{ship: false, hit: false},{ship: false, hit: false}],
+        [{ship: true, hit: false},{ship: true, hit: false},{ship: false, hit: false},{ship: true, hit: false},{ship: false, hit: false}],
+        [{ship: true, hit: false},{ship: true, hit: false},{ship: false, hit: false},{ship: true, hit: false},{ship: false, hit: false}]
+      ];
+
+      var enemy_board = [
+        [{ship: true, hit: false},{ship: true, hit: false},{ship: true, hit: false},{ship: true, hit: false},{ship: false, hit: false}],
+        [{ship: false, hit: false},{ship: false, hit: false},{ship: false, hit: false},{ship: false, hit: false},{ship: false, hit: false}],
+        [{ship: true, hit: false},{ship: false, hit: false},{ship: false, hit: false},{ship: false, hit: false},{ship: false, hit: false}],
+        [{ship: true, hit: false},{ship: true, hit: false},{ship: false, hit: false},{ship: true, hit: false},{ship: false, hit: false}],
+        [{ship: true, hit: false},{ship: false, hit: false},{ship: false, hit: false},{ship: true, hit: false},{ship: false, hit: false}]
+      ];
+
+      // For each row in the player's own board
+      for (var i = 0; i < player_board.length; i++) {
+        // For each tile in the row
+        for (var j = 0; j < player_board.length; j++) {
+
+          // If the tile has a ship in it and is not hit
+          if (player_board[i][j]['ship'] == true && player_board[i][j]['hit'] == false) {
+            console.log("I'm ON A BOAT");
+            $("#player_board tr:eq(" + i + ") td:eq(" + j + ")").attr('class', 'ship');
+            console.log('Coordinates: ', i, j)
+            console.log($("#player_board tr:eq(" + i + ") td:eq(" + j + ")"))
+          }
+
+        }
+      }
+
+      $('#enemy_board td').on('click', function () {
+        if ($(this).attr('class') != 'hit' && $(this).attr('class') != 'revealed') {
+          var col = $(this).parent().children().index($(this));
+          var row = $(this).parent().parent().children().index($(this).parent());
+
+          if (enemy_board[row][col]['ship'] == true) {
+            console.log("HIT")
+            $(this).attr('class', 'hit');
+
+          } else {
+            console.log("miss")
+            $(this).attr('class', 'revealed');
+          }
+        }
+      })
+
+
+    });
+
+
+
+
+
+
+  </script>
   </body>
 </html>

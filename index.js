@@ -18,7 +18,7 @@ app.get("/api/messages", function (req, res) {
   Message.find({}).lean().exec().then(function (messages) {
     res.json(messages);
   })
-})
+});
 
 io.on('connection', function(socket){
   socket.on('battleship turn', function(msg){
@@ -27,7 +27,7 @@ io.on('connection', function(socket){
   // console.log('a user connected');
   // socket.on('disconnect', function(){
   //   console.log('user disconnected');
-  })
+  });
   // });
 });
 
