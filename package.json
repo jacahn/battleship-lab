@@ -1,7 +1,7 @@
 {
   "name": "socket-chat",
   "version": "1.0.0",
-  "description": "",
+  "description": "Builds off the [getting started](http://socket.io/get-started/chat/) example chat app from [Socket.io](http://socket.io/)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,8 +10,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.14.0",
+    "express": "^4.10.2",
     "mongoose": "^4.5.7",
     "socket.io": "^1.4.8"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ga-wdi-exercises/mean-socket-chat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ga-wdi-exercises/mean-socket-chat/issues"
+  },
+  "homepage": "https://github.com/ga-wdi-exercises/mean-socket-chat#readme"
 }
