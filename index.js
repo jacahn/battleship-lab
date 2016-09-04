@@ -21,12 +21,12 @@ app.get("/api/messages", function (req, res) {
 })
 
 io.on('connection', function(socket){
-  // socket.on('chat message', function(msg){
-  //   io.emit('chat message', msg);
-  //   if (msg) Message.create({text: msg});
-  console.log('a user connected');
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
+  socket.on('battleship turn', function(msg){
+    io.emit('battleship turn', msg);
+    if (msg) Message.create({text: msg});
+  // console.log('a user connected');
+  // socket.on('disconnect', function(){
+  //   console.log('user disconnected');
   })
   // });
 });

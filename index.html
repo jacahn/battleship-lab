@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html data-ng-app="ngChat">
+<html data-ng-app="battleship">
   <head>
     <meta charset="utf-8">
-    <title>Chat App</title>
-    <style>
+    <title>Battleship App</title>
+    <!-- /*<style>
       * { margin: 0; padding: 0; box-sizing: border-box; }
       body { font: 13px Helvetica, Arial; }
       form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 100%; }
@@ -12,19 +12,19 @@
       #messages { list-style-type: none; margin: 0; padding: 0; }
       #messages li { padding: 5px 10px; }
       #messages li:nth-child(odd) { background: #eee; }
-    </style>
+    </style>*/ -->
   </head>
-  <body data-ng-controller="chatCtrl as vm">
+  <body data-ng-controller="battleshipCtrl as vm">
 
     <!-- Message List  -->
-    <ul id="messages">
+    <ul id="turns">
       <!-- Prevent error due to duplicate messages by tracking each message via unique index -->
-      <li data-ng-repeat="message in vm.messages track by $index">{{message.text}}</li>
+      <li data-ng-repeat="turn in vm.turns track by $index">{{turn.text}}</li>
     </ul>
 
     <!-- New Message  -->
-    <form data-ng-submit="vm.sendMessage()">
-      <input data-ng-model="vm.newMessage" autocomplete="off" />
+    <form data-ng-submit="vm.sendTurn()">
+      <input data-ng-model="vm.newTurn" autocomplete="off" />
       <button>Send</button>
     </form>
 
@@ -38,45 +38,45 @@
 
       // Define initial Angular module
       angular
-        .module('ngChat', [ 'ngResource' ])
-        .factory("MessageFactory", [ "$resource", Message ])
-        .controller('chatCtrl', [
+        .module('battleship', [ 'ngResource' ])
+        .factory("TurnFactory", [ "$resource", Turn ])
+        .controller('battleshipCtrl', [
           "$scope",
-          "MessageFactory",
-          chatController
+          "TurnFactory",
+          battleshipController
         ]);
 
         // Define Chat Controller
-        function chatController ($scope, MessageFactory) {
+        function battleshipController ($scope, TurnFactory) {
           var vm = this;
 
-          MessageFactory.query().$promise.then(function (messages) {
-            vm.messages = messages;
+          TurnFactory.query().$promise.then(function (turns) {
+            vm.turns = turns;
           });
 
-          vm.newMessage = '';
+          vm.newTurn = '';
 
           // When a user enters a new message...
-          vm.sendMessage = function () {
+          vm.sendTurn = function () {
             // Broadcast event to server, pass along data
-            socket.emit('chat message', vm.newMessage)
-            vm.newMessage = '';
+            socket.emit('battleship turn', vm.newTurn)
+            vm.newTurn = '';
           }
 
           // When the server sends back the new message...
-          socket.on('chat message', function (msg) {
+          socket.on('battleship turn', function (msg) {
             if (msg) {
               // need to trigger angular event loop to render updated data
               $scope.$apply(function () {
-                vm.messages.push({text: msg})
+                vm.turns.push({text: msg})
               })
             }
           });
         }
 
-        // Define Message Factory
-        function Message ($resource) {
-          return $resource("/api/messages", {}, {
+        // Define Turn Factory
+        function Turn ($resource) {
+          return $resource("/api/turns", {}, {
             method: { update: "PUT" }
           });
         }
