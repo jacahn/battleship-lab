@@ -43,9 +43,9 @@
   </head>
   <!--<body data-ng-controller="battleshipCtrl as vm">-->
 
-    <!--&lt;!&ndash; Message List  &ndash;&gt;-->
+    <!--&lt;!&ndash; Turn List  &ndash;&gt;-->
     <!--<ul id="turns">-->
-      <!--&lt;!&ndash; Prevent error due to duplicate messages by tracking each message via unique index &ndash;&gt;-->
+      <!--&lt;!&ndash; Prevent error due to duplicate turns by tracking each turn via unique index &ndash;&gt;-->
       <!--<li data-ng-repeat="turn in vm.turns track by $index">{{turn.text}}</li>-->
     <!--</ul>-->
 
@@ -136,7 +136,7 @@
 
 
     <script src="/socket.io/socket.io.js"></script>
-  <script   src="https://code.jquery.com/jquery-2.2.4.js"   integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="   crossorigin="anonymous"></script>
+    <script   src="https://code.jquery.com/jquery-2.2.4.js"   integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="   crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular-resource.min.js"></script>
     <script>
@@ -171,11 +171,11 @@
           }
 
           // When the server sends back the new message...
-          socket.on('battleship turn', function (msg) {
-            if (msg) {
+          socket.on('battleship turn', function (trn) {
+            if (trn) {
               // need to trigger angular event loop to render updated data
               $scope.$apply(function () {
-                vm.turns.push({text: msg})
+                vm.turns.push({text: trn})
               })
             }
           });
@@ -226,6 +226,31 @@
         }
       }
 
+      function IsFinished() {
+        var finished = true;
+
+        // For each row in the enemy's own board
+        for (var i = 0; i < enemy_board.length; i++) {
+          // For each tile in the row
+          for (var j = 0; j < enemy_board.length; j++) {
+
+            // If the tile has a ship in it and is hit
+            if (enemy_board[i][j]['ship'] == true) {
+              if ($("#enemy_board tr:eq(" + i + ") td:eq(" + j + ")").attr('class')!='hit') {
+                console.log("Not hit")
+                finished = false;
+              }
+
+            }
+          }
+        }
+        if (finished == true) {
+          alert('Game Over')
+        }
+      }
+
+
+
       $('#enemy_board td').on('click', function () {
         if ($(this).attr('class') != 'hit' && $(this).attr('class') != 'revealed') {
           var col = $(this).parent().children().index($(this));
@@ -240,9 +265,19 @@
             $(this).attr('class', 'revealed');
           }
         }
+        IsFinished();
       })
 
 
+
+      // Winner declared
+
+
+      // if on enemy_board, number of ships == number of hits, you win
+      //   hits.push[]
+      //     if hits.length == ships.length
+      // if on player_board, number of ships == number of hits, enemy wins
+      //
     });
 
 

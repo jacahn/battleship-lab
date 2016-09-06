@@ -1,4 +1,4 @@
-# MEAN Chat
+# Battleship lab
 
 Builds off the [getting started](http://socket.io/get-started/chat/) example chat app from [Socket.io](http://socket.io/)
 

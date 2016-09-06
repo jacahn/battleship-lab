@@ -1,10 +1,10 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-var mongoose = require('mongoose');
+var mongoose = require('mongoose');  
 
-mongoose.connect("mongodb://localhost/chat");
-var Message = mongoose.model("Message", new mongoose.Schema({
+mongoose.connect("mongodb://localhost/battleship");
+var Turn = mongoose.model("Turn", new mongoose.Schema({
   text: String
 }));
 
@@ -14,16 +14,16 @@ app.get("/", function (req, res) {
   // res.sendFile(__dirname + '/index.html');
 });
 
-app.get("/api/messages", function (req, res) {
-  Message.find({}).lean().exec().then(function (messages) {
-    res.json(messages);
+app.get("/api/turns", function (req, res) {
+  Turn.find({}).lean().exec().then(function (turns) {
+    res.json(turns);
   })
 });
 
 io.on('connection', function(socket){
-  socket.on('battleship turn', function(msg){
-    io.emit('battleship turn', msg);
-    if (msg) Message.create({text: msg});
+  socket.on('battleship turn', function(trn){
+    io.emit('battleship turn', trn);
+    if (trn) Turn.create({text: trn});
   // console.log('a user connected');
   // socket.on('disconnect', function(){
   //   console.log('user disconnected');
@@ -32,5 +32,5 @@ io.on('connection', function(socket){
 });
 
 http.listen(3000, function () {
-  console.log("listining on *:3000");
+  console.log("listening on *:3000");
 })
